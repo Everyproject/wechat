@@ -38,16 +38,47 @@
 		<plugin.checkstyle.version>2.17</plugin.checkstyle.version>
 		<plugin.pmd.version>3.5</plugin.pmd.version>
 		<plugin.findbugs.version>3.0.1</plugin.findbugs.version>
+		
+		<appengine.app.version>1</appengine.app.version>
+		<appengine.target.version>1.9.48</appengine.target.version>
+		<appengine-maven-plugin-version>1.0.0</appengine-maven-plugin-version>
+		
 	</properties>
 
 	<dependencies>
 
+		<dependency>
+		  <groupId>com.google.appengine</groupId>
+		  <artifactId>appengine-api-1.0-sdk</artifactId>
+		  <version>${appengine.target.version}</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-mp</artifactId>
 			<version>${weixin-java-mp.version}</version>
 		</dependency>
 
+		
+		<dependency>
+		  <groupId>org.mockito</groupId>
+		  <artifactId>mockito-all</artifactId>
+		  <version>1.10.19</version>
+		  <scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>com.google.appengine</groupId>
+		  <artifactId>appengine-testing</artifactId>
+		  <version>${appengine.target.version}</version>
+		  <scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>com.google.appengine</groupId>
+		  <artifactId>appengine-api-stubs</artifactId>
+		  <version>${appengine.target.version}</version>
+		  <scope>test</scope>
+		</dependency>
+		
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -226,25 +257,26 @@
 		<finalName>ellis</finalName><!--生成的目标文件名 -->
 		<plugins><!-- tomcat 的插件 -->
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${plugin.maven-compiler}</version>
-                <configuration>
-                    <source>${project.build.jdk}</source>
-                    <target>${project.build.jdk}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <archiveClasses>true</archiveClasses>
+          <webResources>
+            <!-- in order to interpolate version from pom into appengine-web.xml -->
+            <resource>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <filtering>true</filtering>
+              <targetPath>WEB-INF</targetPath>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
 			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat-maven-plugin</artifactId>
-				<version>1.1-SNAPSHOT</version>
-				<configuration>
-					<!-- <path>/mavenwebdemo</path> -->
-					<url>http://localhost:8668/manager/html</url>
-					<server>tomcat</server>
-				</configuration>
-			</plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>${appengine-maven-plugin-version}</version>
+			 </plugin>
 		</plugins>
 	</build>
 </project>
